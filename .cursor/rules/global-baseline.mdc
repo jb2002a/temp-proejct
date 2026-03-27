@@ -13,6 +13,7 @@ alwaysApply: true
 ## Research-first / Ask-first
 - Use **2026** as the default web-search baseline (include **2026**, **latest**, **up to date** when relevant).
 - **Frameworks**: Always **web-search the latest official docs** before answering. Identify which methods to use, which alternatives are available, and never suggest deprecated APIs or legacy patterns.
+- Cite sources: Always include links to the official documentation you referenced in your answer (prefer latest/up-to-date docs, and include version-specific links when relevant).
 - If requirements are unclear, **ask first** rather than assume.
 
 ## Answer structure
