@@ -5,6 +5,9 @@ from typing import List
 from src.rag.document_loader import load_documents, pdf_file_path
 
 def chunk_document(document: List[Document]) -> List[BaseNode]:
+    """ 
+    Chunk the document into smaller chunks
+    """
     splitter = SentenceSplitter()
     all_chunks = []
     for doc in document:

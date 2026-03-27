@@ -7,6 +7,9 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 pdf_file_path = PROJECT_ROOT / "pdfs" / "당뇨병 임상진료지침.pdf"
 
 def load_documents(pdf_file_path: Path) -> List[Document]:
+    """
+    Load the document from the PDF file
+    """
     reader = PDFReader()
     documents = reader.load_data(pdf_file_path)
     return documents
