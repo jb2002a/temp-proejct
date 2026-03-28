@@ -30,5 +30,5 @@ def query_vector_store_index(query: str) -> List[BaseNode]:
 
 if __name__ == "__main__":
     # python -m src.rag.document_retriever
-    nodes = query_vector_store_index("What is the main topic of the document?")
+    nodes = query_vector_store_index("진료지침 개정 범위와 목적은 뭐야?")
     print(nodes)

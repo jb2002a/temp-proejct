@@ -8,7 +8,7 @@ from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.core import Settings
 from llama_index.core import VectorStoreIndex
 from llama_index.core import StorageContext
-from config_db import CHROMA_DB_PATH, CHROMA_COLLECTION_NAME    
+from src.rag.config_db import CHROMA_DB_PATH, CHROMA_COLLECTION_NAME    
 
 def get_vector_db() -> ChromaVectorStore:
     """
