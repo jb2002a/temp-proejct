@@ -12,11 +12,17 @@ CHROMA_COLLECTION_NAME = "diabetes_clinical_guideline_collection"
 # PDF 폴더 경로
 PDF_FOLDER_PATH = PROJECT_ROOT / "pdfs" 
 
+# 테스트 데이터셋 경로
+TEST_DATASET_PATH = PROJECT_ROOT / "dataset" / "test_dataset" / "testdata.json"
+
 # 청킹 로직
 CHUKING_LOGIC = SentenceSplitter()
 
 # 임베딩 모델 명
 EMBEDDING_MODEL_NAME = "BAAI/bge-m3"
+
+# top-k 수치
+SIMILARITY_TOP_K = 3
 
 # 리포트 폴더 경로
 REPORT_FOLDER_PATH = PROJECT_ROOT / "report"
