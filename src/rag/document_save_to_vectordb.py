@@ -1,21 +1,62 @@
 import chromadb
 from llama_index.vector_stores.chroma import ChromaVectorStore
 from src.rag.document_chuncking import chunk_document
-from src.rag.document_loader import load_documents, pdf_file_path
+from src.rag.document_loader import load_documents, pdf_folder_path
 from typing import List
 from llama_index.core.schema import BaseNode
+from llama_index.embeddings.huggingface import HuggingFaceEmbedding
+from llama_index.core import Settings
+from llama_index.core import VectorStoreIndex
+from llama_index.core import StorageContext
+from pathlib import Path
 
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+CHROMA_DB_PATH = PROJECT_ROOT / "chroma_db"
+
+CHROMA_COLLECTION_NAME = "diabetes_clinical_guideline_collection"
+
+def get_vector_db() -> ChromaVectorStore:
+    """
+    Delete the collection if it exists to avoid duplicate data and create a new one.
+    """
+    client = chromadb.PersistentClient(path=CHROMA_DB_PATH) 
+    
+    collections = client.list_collections()
+    if CHROMA_COLLECTION_NAME in [c.name for c in collections]:
+        client.delete_collection(CHROMA_COLLECTION_NAME)
+        print(f"Deleted collection: {CHROMA_COLLECTION_NAME}")
+    chroma_collection = client.create_collection(CHROMA_COLLECTION_NAME)
+    print(f"Created collection: {CHROMA_COLLECTION_NAME}")
+    vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
+    return vector_store
+
+def get_embed_model() -> HuggingFaceEmbedding:
+    """
+    Get the embedding model
+    """
+    return HuggingFaceEmbedding(model_name="BAAI/bge-m3")
+    
 def save_chunks_to_chroma(chunks: List[BaseNode]) -> None:
     """
-    Save chunks to ChromaDB, Get the existing collection if it exists, create a new one if it doesn't exist.
+    Embedding chunks with VectorStoreIndex and save the index to the ChromaDB
     """
-    client = chromadb.PersistentClient(path="./chroma_db")
-    chroma_collection = client.get_or_create_collection("diabetes_clinical_guideline_collection")
-    vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
-    vector_store.add(chunks, show_progress=True)
+    
+    vector_store = get_vector_db()
+    embed_model = get_embed_model()
+
+    storage_context = StorageContext.from_defaults(vector_store=vector_store)
+
+    index = VectorStoreIndex(
+        storage_context=storage_context,
+        nodes = chunks,
+        embed_model=embed_model,
+        show_progress=True
+    )
+
 
 if __name__ == "__main__":
-    documents = load_documents(pdf_file_path)
+
+    documents = load_documents(pdf_folder_path)
     chunks = chunk_document(documents)
     save_chunks_to_chroma(chunks)
-
+    print(f"Saving Done, Total chunks: {len(chunks)}")
