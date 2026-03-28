@@ -10,10 +10,10 @@ CHROMA_DB_PATH = PROJECT_ROOT / "chroma_db"
 CHROMA_COLLECTION_NAME = "diabetes_clinical_guideline_collection"
 
 # PDF 폴더 경로
-pdf_folder_path = PROJECT_ROOT / "pdfs" 
+PDF_FOLDER_PATH = PROJECT_ROOT / "pdfs" 
 
 # 청킹 로직
-splitter = SentenceSplitter()
+CHUKING_LOGIC = SentenceSplitter()
 
 # 임베딩 모델 명
 EMBEDDING_MODEL_NAME = "BAAI/bge-m3"

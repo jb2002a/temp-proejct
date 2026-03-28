@@ -4,14 +4,14 @@ from typing import List
 from pathlib import Path
 from llama_index.core import SimpleDirectoryReader
 
-from src.rag.config_db import pdf_folder_path
+from src.rag.config_db import PDF_FOLDER_PATH
 
-def load_documents(pdf_folder_path: Path) -> List[Document]:
+def load_documents() -> List[Document]:
     """
     Load all pdf files in the PDF folder and return a list of document objects
     """
     reader = SimpleDirectoryReader(
-      input_dir=str(pdf_folder_path),
+      input_dir=str(PDF_FOLDER_PATH),
       required_exts=[".pdf"],              # PDF만 읽기
       recursive=False,                     # 하위 폴더까지면 True
       file_extractor={".pdf": PDFReader()} # 명시적으로 PDF reader 지정
@@ -21,6 +21,6 @@ def load_documents(pdf_folder_path: Path) -> List[Document]:
     return documents
 
 if __name__ == "__main__":
-    documents = load_documents(pdf_folder_path)   
+    documents = load_documents()   
     print(f"Loading Done, Total documents: {len(documents)}")
 
