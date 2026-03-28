@@ -8,12 +8,7 @@ from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.core import Settings
 from llama_index.core import VectorStoreIndex
 from llama_index.core import StorageContext
-from pathlib import Path
-
-PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
-CHROMA_DB_PATH = PROJECT_ROOT / "chroma_db"
-
-CHROMA_COLLECTION_NAME = "diabetes_clinical_guideline_collection"
+from config_db import CHROMA_DB_PATH, CHROMA_COLLECTION_NAME    
 
 def get_vector_db() -> ChromaVectorStore:
     """
@@ -21,10 +16,13 @@ def get_vector_db() -> ChromaVectorStore:
     """
     client = chromadb.PersistentClient(path=CHROMA_DB_PATH) 
     
+    # Delete the collection if it exists
     collections = client.list_collections()
     if CHROMA_COLLECTION_NAME in [c.name for c in collections]:
         client.delete_collection(CHROMA_COLLECTION_NAME)
         print(f"Deleted collection: {CHROMA_COLLECTION_NAME}")
+
+    # Create a new collection
     chroma_collection = client.create_collection(CHROMA_COLLECTION_NAME)
     print(f"Created collection: {CHROMA_COLLECTION_NAME}")
     vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
@@ -46,6 +44,7 @@ def save_chunks_to_chroma(chunks: List[BaseNode]) -> None:
 
     storage_context = StorageContext.from_defaults(vector_store=vector_store)
 
+    # index는 저장소 관리 객체라고 이해하는게 편함(저장,청킹,검색 등 모두 수행)
     index = VectorStoreIndex(
         storage_context=storage_context,
         nodes = chunks,
@@ -55,7 +54,7 @@ def save_chunks_to_chroma(chunks: List[BaseNode]) -> None:
 
 
 if __name__ == "__main__":
-
+    # python -m src.rag.document_save_to_vectordb
     documents = load_documents(pdf_folder_path)
     chunks = chunk_document(documents)
     save_chunks_to_chroma(chunks)
