@@ -49,8 +49,7 @@ def save_chunks_to_chroma(chunks: List[BaseNode]) -> None:
     index = VectorStoreIndex(
         storage_context=storage_context,
         nodes = chunks,
-        embed_model=embed_model,
-        show_progress=True
+        embed_model=embed_model
     )
 
 
