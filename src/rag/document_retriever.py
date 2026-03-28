@@ -1,5 +1,5 @@
 from src.rag.document_save_to_vectordb import get_embed_model
-from src.rag.config_db import CHROMA_DB_PATH, CHROMA_COLLECTION_NAME
+from src.rag.config_db import CHROMA_DB_PATH, CHROMA_COLLECTION_NAME, SIMILARITY_TOP_K
 import chromadb
 from llama_index.vector_stores.chroma import ChromaVectorStore
 from llama_index.core import VectorStoreIndex
@@ -18,14 +18,14 @@ def get_vector_store_index() -> VectorStoreIndex:
 
     vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
     index = VectorStoreIndex.from_vector_store(vector_store=vector_store, embed_model=embed_model)
+    print(f"Vector store index created")
     return index
 
-def query_vector_store_index(query: str) -> List[NodeWithScore]:
+def query_vector_store_index(query: str, VectorStoreIndex: VectorStoreIndex) -> List[NodeWithScore]:
     """
     Query the vector store index and return the results
     """
-    index = get_vector_store_index()
-    retriever = index.as_retriever()
+    retriever = VectorStoreIndex.as_retriever(similarity_top_k = SIMILARITY_TOP_K)
     nodes = retriever.retrieve(query)
     return nodes
 
