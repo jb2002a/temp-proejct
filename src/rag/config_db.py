@@ -1,5 +1,7 @@
 from pathlib import Path
 from llama_index.core.node_parser import SentenceSplitter
+from llama_index.readers.file import PDFReader
+from llama_index.readers.file import PyMuPDFReader
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 
@@ -14,6 +16,9 @@ PDF_FOLDER_PATH = PROJECT_ROOT / "pdfs"
 
 # 테스트 데이터셋 경로
 TEST_DATASET_PATH = PROJECT_ROOT / "dataset" / "test_dataset" / "testdata.json"
+
+# PDF Reader
+PDF_READER = PyMuPDFReader()
 
 # 청킹 로직
 CHUKING_LOGIC = SentenceSplitter()

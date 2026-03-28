@@ -5,10 +5,12 @@ from src.rag.config_db import (
     EMBEDDING_MODEL_NAME,
     REPORT_FOLDER_PATH,
     TEST_DATASET_PATH,
+    SIMILARITY_TOP_K
 )
 from src.rag.document_retriever import get_vector_store_index, query_vector_store_index
 from datetime import datetime
 import json
+from src.rag.remove_wrong_characters import clean_pdf_text
 
 # 허깅페이스 로깅 제거
 import logging
@@ -42,6 +44,7 @@ def make_report() -> None:
     Make a report of the document and save it to a text file
     """
     report = make_deafult_report()
+    total_score = 0
 
     with open(TEST_DATASET_PATH, "r", encoding="utf-8") as f:
         test_dataset = json.load(f)
@@ -64,15 +67,21 @@ def make_report() -> None:
 
         for index, node in enumerate(nodes):
             report += f"Index: {index}\n"
-            report += f"Text: {node.text}\n"
+            report += f"Text: {clean_pdf_text(node.text)}\n"
             report += f"Score: {node.score}\n"
             report += "=" * 100 + "\n"
+            total_score += node.score
         report += "\n"
         report += "\n"
         print(f"Processed test {index_test + 1} is done")
         print("=" * 100 + "\n\n")
 
     print(f"All tests are done")
+
+    average_score = total_score / len(test_dataset) 
+    average_score = average_score / SIMILARITY_TOP_K    
+    report += f"Average score: {average_score}\n"
+    report += "=" * 100 + "\n"
     save_report(report)
 
 def save_report(report: str) -> None:
