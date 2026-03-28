@@ -1,9 +1,7 @@
 from llama_index.readers.file import PDFReader
 from llama_index.core import Document
 from typing import List
-from pathlib import Path
 from llama_index.core import SimpleDirectoryReader
-
 from src.rag.config_db import PDF_FOLDER_PATH
 
 def load_documents() -> List[Document]:

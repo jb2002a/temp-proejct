@@ -1,7 +1,7 @@
 import chromadb
 from llama_index.vector_stores.chroma import ChromaVectorStore
 from src.rag.document_chuncking import chunk_document
-from src.rag.document_loader import load_documents, pdf_folder_path
+from src.rag.document_loader import load_documents
 from typing import List
 from llama_index.core.schema import BaseNode
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
@@ -56,7 +56,7 @@ def save_chunks_to_chroma(chunks: List[BaseNode]) -> None:
 
 if __name__ == "__main__":
     # python -m src.rag.document_save_to_vectordb
-    documents = load_documents(pdf_folder_path)
+    documents = load_documents()
     chunks = chunk_document(documents)
     save_chunks_to_chroma(chunks)
     print(f"Saving Done, Total chunks: {len(chunks)}")

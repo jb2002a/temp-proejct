@@ -2,7 +2,7 @@ from llama_index.core.node_parser import SentenceSplitter
 from llama_index.core import Document
 from llama_index.core.schema import BaseNode
 from typing import List
-from src.rag.document_loader import load_documents, pdf_folder_path
+from src.rag.document_loader import load_documents
 from src.rag.config_db import CHUKING_LOGIC
 
 
@@ -18,7 +18,7 @@ def chunk_document(document: List[Document]) -> List[BaseNode]:
     return all_chunks
 
 if __name__ == "__main__":  
-    documents = load_documents(pdf_folder_path)
+    documents = load_documents()
     chunks = chunk_document(documents)
     for chunk in chunks:
         print(chunk.text)

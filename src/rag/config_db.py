@@ -17,3 +17,6 @@ CHUKING_LOGIC = SentenceSplitter()
 
 # 임베딩 모델 명
 EMBEDDING_MODEL_NAME = "BAAI/bge-m3"
+
+# 리포트 폴더 경로
+REPORT_FOLDER_PATH = PROJECT_ROOT / "report"

@@ -3,8 +3,8 @@ from src.rag.config_db import CHROMA_DB_PATH, CHROMA_COLLECTION_NAME
 import chromadb
 from llama_index.vector_stores.chroma import ChromaVectorStore
 from llama_index.core import VectorStoreIndex
-from llama_index.core.schema import BaseNode
 from typing import List
+from llama_index.core.schema import NodeWithScore
 
 
 def get_vector_store_index() -> VectorStoreIndex:
@@ -20,7 +20,7 @@ def get_vector_store_index() -> VectorStoreIndex:
     index = VectorStoreIndex.from_vector_store(vector_store=vector_store, embed_model=embed_model)
     return index
 
-def query_vector_store_index(query: str) -> List[BaseNode]:
+def query_vector_store_index(query: str) -> List[NodeWithScore]:
     """
     Query the vector store index and return the results
     """
