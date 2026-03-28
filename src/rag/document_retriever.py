@@ -6,6 +6,7 @@ from llama_index.core import VectorStoreIndex
 from llama_index.core.schema import BaseNode
 from typing import List
 
+
 def get_vector_store_index() -> VectorStoreIndex:
     """
     Connect to the ChromaDB and return the vector store

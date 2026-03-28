@@ -4,9 +4,7 @@ from typing import List
 from pathlib import Path
 from llama_index.core import SimpleDirectoryReader
 
-
-PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
-pdf_folder_path = PROJECT_ROOT / "pdfs" 
+from src.rag.config_db import pdf_folder_path
 
 def load_documents(pdf_folder_path: Path) -> List[Document]:
     """

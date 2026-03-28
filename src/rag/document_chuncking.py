@@ -3,6 +3,7 @@ from llama_index.core import Document
 from llama_index.core.schema import BaseNode
 from typing import List
 from src.rag.document_loader import load_documents, pdf_folder_path
+from src.rag.config_db import splitter
 
 
 #노드 :원본 문서(Document)를 특정 크기로 자른 조각(Chunk)을 객체화한 것, 청크단위 객체라고 보면됨
@@ -10,7 +11,6 @@ def chunk_document(document: List[Document]) -> List[BaseNode]:
     """ 
     Chunk the document into smaller chunks
     """
-    splitter = SentenceSplitter()
     all_chunks = []
     for doc in document:
         chunks = splitter.get_nodes_from_documents([doc])

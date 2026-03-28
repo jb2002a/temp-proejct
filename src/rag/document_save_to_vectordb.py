@@ -9,6 +9,7 @@ from llama_index.core import Settings
 from llama_index.core import VectorStoreIndex
 from llama_index.core import StorageContext
 from src.rag.config_db import CHROMA_DB_PATH, CHROMA_COLLECTION_NAME    
+from src.rag.config_db import EMBEDDING_MODEL_NAME
 
 def get_vector_db() -> ChromaVectorStore:
     """
@@ -32,7 +33,7 @@ def get_embed_model() -> HuggingFaceEmbedding:
     """
     Get the embedding model
     """
-    return HuggingFaceEmbedding(model_name="BAAI/bge-m3")
+    return HuggingFaceEmbedding(model_name=EMBEDDING_MODEL_NAME)
     
 def save_chunks_to_chroma(chunks: List[BaseNode]) -> None:
     """
