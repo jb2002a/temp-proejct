@@ -11,8 +11,10 @@ alwaysApply: true
 - Focus on **technical accuracy** and **best practices**.
 
 ## Research-first / Ask-first
-- **Frameworks**: Always **web-search the latest official docs** before answering. Identify which methods to use, which alternatives are available, and never suggest deprecated APIs or legacy patterns.
-- Cite sources: Always include links to the official documentation you referenced in your answer (prefer latest/up-to-date docs, and include version-specific links when relevant).
+- **Frameworks**: Always **web-search** before answering. Use queries that bias toward current docs, e.g. include the product name, `"documentation"`, and **current year or major version** (e.g. `2026`, or the latest stable release you infer from the official site). Prefer **official doc domains** over blogs, Stack Overflow, or third-party tutorials unless the official docs are missing.
+- **Recency**: Treat pages as stale if they clearly predate the current major release or show an old copyright year without a “updated” date; **do not** treat them as authoritative—**search again** with `site:docs.*` or the vendor’s documented domain, or open the project’s **latest** / **stable** docs landing page from the official site and navigate from there.
+- Identify which methods to use, which alternatives are available, and never suggest deprecated APIs or legacy patterns.
+- Cite sources: Always include links to the **official** documentation you referenced (stable or “latest” URL path when the project offers it). If you only find older pages, say so and still prefer the newest official page you can verify.
 - If requirements are unclear, **ask first** rather than assume.
 
 ## Answer structure
