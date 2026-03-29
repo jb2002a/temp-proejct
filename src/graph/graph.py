@@ -20,6 +20,15 @@ if __name__ == "__main__":
     # python -m src.graph
     query = input("Enter your query: ")
     graph = build_graph()
+    #State로 반환
     result = graph.invoke({"query": query})
-    result = result["answer"]
-    print(result)
+
+    answer = result.get("answer") or ""
+    nodes = result.get("nodes") or []
+
+    print(answer)   
+    print("--------------------------------")
+    print("Answer:")
+    for index, node in enumerate(nodes):
+        print(f"[{index}] {node.text}")
+        print("-" * 100)
