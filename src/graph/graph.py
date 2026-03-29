@@ -24,11 +24,11 @@ if __name__ == "__main__":
     result = graph.invoke({"query": query})
 
     answer = result.get("answer") or ""
-    nodes = result.get("nodes") or []
+    context = result.get("context") or []
 
     print(answer)   
     print("--------------------------------")
     print("Answer:")
-    for index, node in enumerate(nodes):
-        print(f"[{index}] {node.text}")
+    for index, text in enumerate(context):
+        print(f"[{index}] {text}")
         print("-" * 100)

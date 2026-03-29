@@ -11,15 +11,16 @@ def generate_node(state: State) -> dict:
     """
     query = state.get("query") or ""
 
-    texts = [nws.text for nws in (state.get("nodes") or [])]
-    context = "\n\n".join(f"[{index}] {text}" for index, text in enumerate(texts))
+    context = state.get("context") or []
+
+    context_str = "\n\n".join(f"[{index}] {text}" for index, text in enumerate(context))
 
     prompt = create_prompt_template()   
     model = get_google_genai_client()
     
     sequence = prompt | model
     
-    result = sequence.invoke({"context": context, "query": query})
+    result = sequence.invoke({"context": context_str, "query": query})
 
     return {"answer": result.content}
 

@@ -4,7 +4,6 @@ from llama_index.core.schema import NodeWithScore
 
 class State(TypedDict):
     query: str
-    nodes: List[NodeWithScore]
+    context: List[str]
     answer: str
 
-    
