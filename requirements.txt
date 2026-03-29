@@ -8,3 +8,4 @@ llama-index-readers-file[pymupdf]
 langgraph
 langchain
 langchain[google-genai]
+ragas

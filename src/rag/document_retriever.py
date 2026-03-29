@@ -1,11 +1,17 @@
-from src.rag.document_save_to_vectordb import get_embed_model
 from src.rag.config_db import CHROMA_DB_PATH, CHROMA_COLLECTION_NAME, SIMILARITY_TOP_K
 import chromadb
 from llama_index.vector_stores.chroma import ChromaVectorStore
 from llama_index.core import VectorStoreIndex
 from typing import List
 from llama_index.core.schema import NodeWithScore
+from llama_index.embeddings.huggingface import HuggingFaceEmbedding
+from src.rag.config_db import EMBEDDING_MODEL_NAME
 
+def get_embed_model() -> HuggingFaceEmbedding:
+    """
+    Get the embedding model
+    """
+    return HuggingFaceEmbedding(model_name=EMBEDDING_MODEL_NAME)
 
 def get_vector_store_index() -> VectorStoreIndex:
     """
