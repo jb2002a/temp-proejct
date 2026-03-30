@@ -1,6 +1,6 @@
 
 from src.rag.config import Settings
-from src.rag.document_db import save_index_to_chroma, get_index_from_chroma
+from src.rag.document_db import save_index_to_chroma
 from src.rag.document_query import index_query
 
 def save_index_to_db() -> None:
