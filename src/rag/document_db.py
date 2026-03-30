@@ -30,6 +30,7 @@ def get_storage_context() -> StorageContext:
     collection = db.get_or_create_collection("guideline_collection")
 
     vector_store = ChromaVectorStore(chroma_collection=collection)
+    print("노드(청크) 수:", collection.count())
     storage_context = StorageContext.from_defaults(vector_store=vector_store)
     return storage_context
 

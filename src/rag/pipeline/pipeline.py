@@ -20,7 +20,6 @@ def query_index(query: str) -> str:
     return result
 
 if __name__ == "__main__":
-    save_index_to_db()
-    query = "What is the purpose of the guideline?"
+    query = input("Enter your query: ")
     response = query_index(query)
     print(response)
