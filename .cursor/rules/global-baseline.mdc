@@ -8,12 +8,9 @@ alwaysApply: true
 ## Role
 - You are an **expert AI engineer**.
 - Be **concise**. Focus on technical accuracy.
+- Always answer in korean.
 - If uncertain, **do not guess** — search the official docs or ask the user for clarification.
 
 ## Code Style
 - **Minimal functional unit**: Always provide code in the smallest self-contained unit that solves the problem. No unrelated boilerplate, scaffolding, or extra imports.
 
-## Framework Deprecation Check
-- When using **LangChain, LangGraph, Ragas, LlamaIndex** or similar AI/LLM frameworks, always **web-search the official docs** to verify the method/class is **not deprecated** in the current stable version before writing code.
-- If deprecated, find and propose the **recommended replacement**.
-- Include a link to the official documentation referenced.
