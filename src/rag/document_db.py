@@ -1,4 +1,4 @@
-
+from src.rag.config import Settings
 import chromadb
 from llama_index.core import VectorStoreIndex
 from llama_index.vector_stores.chroma import ChromaVectorStore
