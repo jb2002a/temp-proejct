@@ -1,35 +1,34 @@
-import src.rag.document_loader as document_loader
-from dotenv import load_dotenv
-import os
-from ragas.llms import llm_factory, InstructorBaseRagasLLM
-from openai import OpenAI
-from ragas.embeddings import HuggingFaceEmbeddings
-from ragas.testset import Testset, TestsetGenerator
-from llama_index.core import Document
-from typing import List
+from llama_index.core import Settings
+
+from src.rag.document_loader import load_documents
+from ragas.testset import TestsetGenerator
+
+import pathlib
+
+from pandas import DataFrame
+
+PROJECT_ROOT = pathlib.Path(__file__).resolve().parent.parent.parent
+TESTSET_FOLDER_PATH = PROJECT_ROOT / "test_set"
+TESTSET_FILE_PATH = PROJECT_ROOT / "test_set" / "testset.jsonl"
 
 
+def generate_test_dataset() -> DataFrame:
+    documents = load_documents()
+    documents = documents[10:150]
 
-def generate_test_dataset() -> List[Testset]:
-    document_list: List[Document] = document_loader.load_documents()
-    
-    llm = get_llm()
-    embedding_model = get_huggingface_embeddings()
-    
-    generator = TestsetGenerator(llm=llm, embedding_model=embedding_model)
-    dataset = generator.generate_with_llamaindex_docs(document_list, testset_size=10)
-    return dataset
+    llm = Settings.llm
+    embedding_model = Settings.embed_model
 
-def get_llm() -> InstructorBaseRagasLLM:
-    
-    load_dotenv(override=True)   
-    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-    llm = llm_factory("gpt-4o-mini", client=client)
-    return llm
+    llm_context = "생성하는 질문(user query)과 정답(reference answer)은 모두 한국어로만 작성하세요."
 
-def get_huggingface_embeddings() -> HuggingFaceEmbeddings:
-    return HuggingFaceEmbeddings(model="BAAI/bge-m3")
+    generator = TestsetGenerator.from_llama_index(llm=llm, embedding_model=embedding_model, llm_context=llm_context)
+    testset = generator.generate_with_llamaindex_docs(documents=documents, testset_size=20)
 
-if __name__ == "__main__":
-    dataset = generate_test_dataset()
-    print(dataset)
+    df = testset.to_pandas()
+
+    if not TESTSET_FOLDER_PATH.exists():
+        TESTSET_FOLDER_PATH.mkdir(parents=True, exist_ok=True)
+
+    df.to_json(TESTSET_FILE_PATH, orient="records", lines=True, force_ascii=False)
+
+    return df
