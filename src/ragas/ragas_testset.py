@@ -1,4 +1,4 @@
-from llama_index.core import Settings
+from src.rag.config import Settings
 
 from src.rag.document_loader import load_documents
 from ragas.testset import TestsetGenerator
@@ -21,7 +21,7 @@ def generate_test_dataset_and_store() -> DataFrame:
     llm = Settings.llm
     embedding_model = Settings.embed_model
 
-    llm_context = "생성하는 질문(user query)과 정답(reference answer)은 모두 한국어로만 작성하세요."
+    llm_context = "문서와 같은 언어를 사용하여 질문과 답변을 생성하세요."
 
     generator = TestsetGenerator.from_llama_index(llm=llm, embedding_model=embedding_model, llm_context=llm_context)
     testset = generator.generate_with_llamaindex_docs(documents=documents, testset_size=20)
@@ -45,5 +45,3 @@ if __name__ == "__main__":
     # python -m src.ragas.ragas_testset
     generate_test_dataset_and_store()
     print("Test dataset generated and stored")
-    dataset = get_test_dataset()
-    print(dataset)

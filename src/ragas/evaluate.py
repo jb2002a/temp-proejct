@@ -113,7 +113,7 @@ def build_eval_dataset_from_jsonl_and_query_engine() -> EvaluationDataset:
 async def main():
     load_dotenv()
     client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-    llm = llm_factory("gpt-4o-mini", client=client, max_tokens=8192, temperature=0.0)
+    llm = llm_factory("gpt-4o", client=client, max_tokens=8192, temperature=0.0)
     embedding_model = HuggingFaceEmbeddings(model="BAAI/bge-m3")
 
     backend = LocalCSVBackend(root_dir=str(PROJECT_ROOT / "ragas_store"))

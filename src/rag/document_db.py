@@ -35,5 +35,6 @@ def get_storage_context() -> StorageContext:
     return storage_context
 
 if __name__ == "__main__":
+    # python -m src.rag.document_db
     save_index_to_chroma()
     print("Index saved to ChromaDB")
