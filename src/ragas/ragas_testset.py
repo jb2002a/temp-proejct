@@ -17,7 +17,6 @@ TESTSET_FILE_PATH = PROJECT_ROOT / "test_set" / "testset.jsonl"
 
 def generate_test_dataset_and_store() -> DataFrame:
     documents = load_documents()
-    documents = documents[10:150]
 
     llm = Settings.llm
     embedding_model = Settings.embed_model

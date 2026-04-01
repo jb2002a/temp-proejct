@@ -8,30 +8,46 @@ from openai import AsyncOpenAI
 from pydantic import BaseModel
 from ragas import experiment
 from ragas.backends.local_csv import LocalCSVBackend
+
 from ragas.dataset_schema import EvaluationDataset
 from ragas.embeddings import HuggingFaceEmbeddings
 from ragas.llms import llm_factory
-from ragas.metrics.collections import AnswerRelevancy, Faithfulness
+from ragas.metrics.collections import AnswerRelevancy, Faithfulness, ContextPrecision, ContextRecall
 
 from src.rag.document_query import get_query_engine, get_contexts
 
 PROJECT_ROOT = pathlib.Path(__file__).resolve().parent.parent.parent
 TESTSET_FILE_PATH = PROJECT_ROOT / "test_set" / "testset.jsonl"
 
+
 class ExperimentResult(BaseModel):
+    # 질문 (user query)
     user_input: str
+    # 모델의 답변
     response: str
-    retrieved_contexts: list[str]
+    # 모델이 참조한 문서 컨텍스트
     reference: str | None = None
+    # 테스트셋의 정답 컨텍스트
+    retrieved_contexts: list[str]
+    # 테스트셋의 정답
     reference_contexts: list[str] | None = None
+    # 근거 문서에 기반해 답변했는가?
     faithfulness: float
+    # 질문의 의도에 맞는 답변인가?
     answer_relevancy: float
+    # 관련 있는 문서가 상위에 노출되었는가?
+    context_precision: float
+    # 필요한 정보를 빠짐없이 가져왔는가?
+    context_recall: float
 
 @experiment(ExperimentResult)
 async def run_evaluation(row, llm, embedding_model):
 
     faithfulness = Faithfulness(llm=llm)
     answer_relevancy = AnswerRelevancy(llm=llm, embeddings=embedding_model)
+    context_precision = ContextPrecision(llm=llm)
+    context_recall = ContextRecall(llm=llm)
+
 
     faith_result = await faithfulness.ascore(
         user_input=row.user_input,
@@ -44,6 +60,18 @@ async def run_evaluation(row, llm, embedding_model):
         response=row.response
     )
 
+    context_precision_result = await context_precision.ascore(
+        user_input=row.user_input,
+        reference=row.reference ,
+        retrieved_contexts=row.retrieved_contexts
+    )
+
+    context_recall_result = await context_recall.ascore(
+        user_input=row.user_input,
+        reference=row.reference,
+        retrieved_contexts=row.retrieved_contexts
+    )
+
     return ExperimentResult(
         user_input=row.user_input,
         response=row.response,
@@ -51,7 +79,9 @@ async def run_evaluation(row, llm, embedding_model):
         reference=getattr(row, "reference", None),
         reference_contexts=getattr(row, "reference_contexts", None),
         faithfulness=faith_result.value,
-        answer_relevancy=relevancy_result.value
+        answer_relevancy=relevancy_result.value,
+        context_precision=context_precision_result.value,
+        context_recall=context_recall_result.value
     )    
 
 
