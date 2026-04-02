@@ -29,7 +29,11 @@ def get_contexts(response: Response) -> list[str]:
 
 if __name__ == "__main__":
     # python -m src.rag.document_query
-    response = query_index("경구혈당강하제의 단독요법 실패 시, 심혈관질환 예방을 위해 어떤 약제를 추가하는 것이 권장되며 그 이유는 무엇인가요?")
+    user_input = "향후 10년의 CHD 위험도 예측"
+    response = query_index(user_input)
     
     print(get_contexts(response))
+    print("*" * 100)
+    print(response.response)
+
     

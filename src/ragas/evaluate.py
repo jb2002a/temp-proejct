@@ -12,9 +12,8 @@ from ragas.backends.local_csv import LocalCSVBackend
 from ragas.dataset_schema import EvaluationDataset
 from ragas.embeddings import HuggingFaceEmbeddings
 from ragas.llms import llm_factory
-from ragas.metrics.collections import AnswerRelevancy, Faithfulness, ContextPrecision, ContextRecall
-
 from src.rag.document_query import get_query_engine, get_contexts
+from src.ragas.metrics import FaithfulnessWithReason, AnswerRelevancyWithReason, ContextPrecisionWithReason, ContextRecallWithReason
 
 PROJECT_ROOT = pathlib.Path(__file__).resolve().parent.parent.parent
 TESTSET_FILE_PATH = PROJECT_ROOT / "test_set" / "testset.jsonl"
@@ -40,13 +39,19 @@ class ExperimentResult(BaseModel):
     # 필요한 정보를 빠짐없이 가져왔는가?
     context_recall: float
 
+    # 기준 미충족시 이유 반환
+    faith_reason: str | None = None
+    relevancy_reason: str | None = None
+    context_precision_reason: str | None = None
+    context_recall_reason: str | None = None
+
 @experiment(ExperimentResult)
 async def run_evaluation(row, llm, embedding_model):
 
-    faithfulness = Faithfulness(llm=llm)
-    answer_relevancy = AnswerRelevancy(llm=llm, embeddings=embedding_model)
-    context_precision = ContextPrecision(llm=llm)
-    context_recall = ContextRecall(llm=llm)
+    faithfulness = FaithfulnessWithReason(llm=llm)
+    answer_relevancy = AnswerRelevancyWithReason(llm=llm, embeddings=embedding_model)
+    context_precision = ContextPrecisionWithReason(llm=llm)
+    context_recall = ContextRecallWithReason(llm=llm)
 
 
     faith_result = await faithfulness.ascore(
@@ -72,6 +77,8 @@ async def run_evaluation(row, llm, embedding_model):
         retrieved_contexts=row.retrieved_contexts
     )
 
+    faith_reason, relevancy_reason, context_precision_reason, context_recall_reason = get_reasons(faith_result, relevancy_result, context_precision_result, context_recall_result)
+
     return ExperimentResult(
         user_input=row.user_input,
         response=row.response,
@@ -81,9 +88,39 @@ async def run_evaluation(row, llm, embedding_model):
         faithfulness=faith_result.value,
         answer_relevancy=relevancy_result.value,
         context_precision=context_precision_result.value,
-        context_recall=context_recall_result.value
+        context_recall=context_recall_result.value,
+        faith_reason=faith_reason,
+        relevancy_reason=relevancy_reason,
+        context_precision_reason=context_precision_reason,
+        context_recall_reason=context_recall_reason
+
     )    
 
+
+def get_reasons(faith_result, relevancy_result, context_precision_result, context_recall_result):
+
+    if faith_result.value < 1.0: 
+        faith_reason = faith_result.reason
+    else:
+        faith_reason = None
+
+    if relevancy_result.value < 0.8:
+        relevancy_reason = relevancy_result.reason
+    else:
+        relevancy_reason = None
+
+    if context_precision_result.value < 1.0:
+        context_precision_reason = context_precision_result.reason
+    else:
+        context_precision_reason = None
+
+    if context_recall_result.value < 1.0:
+        context_recall_reason = context_recall_result.reason
+    else:
+        context_recall_reason = None
+
+    return faith_reason, relevancy_reason, context_precision_reason, context_recall_reason
+    
 
 def build_eval_dataset_from_jsonl_and_query_engine() -> EvaluationDataset:
     query_engine = get_query_engine()
@@ -113,7 +150,7 @@ def build_eval_dataset_from_jsonl_and_query_engine() -> EvaluationDataset:
 async def main():
     load_dotenv()
     client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-    llm = llm_factory("gpt-4o", client=client, max_tokens=8192, temperature=0.0)
+    llm = llm_factory("gpt-4o-mini", client=client, max_tokens=8192, temperature=0.0)
     embedding_model = HuggingFaceEmbeddings(model="BAAI/bge-m3")
 
     backend = LocalCSVBackend(root_dir=str(PROJECT_ROOT / "ragas_store"))

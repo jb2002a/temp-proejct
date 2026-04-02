@@ -21,7 +21,7 @@ def generate_test_dataset_and_store() -> DataFrame:
     llm = Settings.llm
     embedding_model = Settings.embed_model
 
-    llm_context = "문서와 같은 언어를 사용하여 질문과 답변을 생성하세요."
+    llm_context = "반드시 모든 질문과 답변은 한국어로 작성하세요."
 
     generator = TestsetGenerator.from_llama_index(llm=llm, embedding_model=embedding_model, llm_context=llm_context)
     testset = generator.generate_with_llamaindex_docs(documents=documents, testset_size=20)
