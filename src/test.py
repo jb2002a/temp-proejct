@@ -1,6 +1,9 @@
 from src.rag.document_loader import load_documents
 from ragas.utils import num_tokens_from_string
 
+from langchain_core.runnables import RunnableLambda
+
+
 def main():
     docs = load_documents()
     tokens = [num_tokens_from_string(d.text or "") for d in docs]

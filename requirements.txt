@@ -1,11 +1,9 @@
-llama-index
-llama-index-readers-file
+
 pypdf
 chromadb
-llama-index-vector-stores-chroma
-llama-index-embeddings-huggingface
-llama-index-readers-file[pymupdf]
 langgraph
 langchain
 langchain[google-genai]
+langchain-huggingface
 ragas
+langchain-chroma
