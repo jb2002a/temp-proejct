@@ -1,9 +1,8 @@
-import os
+
 import pathlib
 
 PROJECT_ROOT = pathlib.Path(__file__).resolve().parent.parent.parent.parent
 
-API_KEY = os.getenv("OPENAI_API_KEY")
 MODEL = "gpt-4o-mini"
 EMBEDING_MODEL = "BAAI/bge-m3"
 CHROMA_DB_PATH = "./chroma_db"
