@@ -1,6 +1,4 @@
-from src.rag.config import Settings
 
-from src.rag.document_loader import load_documents
 from ragas.testset import TestsetGenerator
 from ragas.testset.synthesizers.single_hop.specific import SingleHopSpecificQuerySynthesizer
 import pathlib
@@ -27,19 +25,9 @@ def generate_test_dataset_and_store() -> DataFrame:
     testset = generator.generate_with_llamaindex_docs(documents=documents, testset_size=20)
 
     df = testset.to_pandas()
-
-    if not TESTSET_FOLDER_PATH.exists():
-        TESTSET_FOLDER_PATH.mkdir(parents=True, exist_ok=True)
-
-    df.to_json(TESTSET_FILE_PATH, orient="records", lines=True, force_ascii=False)
-
     return df
 
-def get_test_dataset() -> EvaluationDataset:
-     p = Path(TESTSET_FILE_PATH)
-     with p.open("r", encoding="utf-8") as f:
-        data = [json.loads(line) for line in f]
-     return EvaluationDataset.from_list(data)
+def upload_pandas_with_langsmith(df: DataFrame) -> None:
 
 if __name__ == "__main__":
     # python -m src.ragas.ragas_testset
