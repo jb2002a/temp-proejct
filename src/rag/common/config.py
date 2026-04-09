@@ -3,7 +3,9 @@ import pathlib
 
 PROJECT_ROOT = pathlib.Path(__file__).resolve().parent.parent.parent.parent
 
-MODEL = "gpt-4o-mini"
+BASIC_MODEL = "gpt-4o-mini"
+ADVANCED_MODEL = "gpt-4o"
+
 EMBEDING_MODEL = "BAAI/bge-m3"
 CHROMA_DB_PATH = "./chroma_db"
 CHROMA_COLLECTION_NAME = "guideline_collection"
