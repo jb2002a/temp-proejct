@@ -33,9 +33,7 @@ def save_chunks_to_chroma(all_splits: List[Document]) -> None:
     Save the chunks to the ChromaDB
     """
     vector_store = get_vector_store_from_chroma()
-    document = load_documents()
-    all_splits = split_document(document)
-
+    print("Save started")
     document_ids = vector_store.add_documents(documents=all_splits)
     print("Save Done")
 
