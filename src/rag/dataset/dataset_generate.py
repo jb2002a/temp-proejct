@@ -33,7 +33,7 @@ async def generate_test_dataset_and_store() -> DataFrame:
     testset = generator.generate_with_langchain_docs(
         documents=documents,
         testset_size=1,
-        query_distribution=distribution,  # adapt된 distribution 전달
+        query_distribution=distribution,
     )
     df = testset.to_pandas()
     return df
