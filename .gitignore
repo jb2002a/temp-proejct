@@ -1,3 +1,15 @@
 .env
 .cursor/rules/global-baseline.mdc
 
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.Python
+# venv
+.venv/
+venv/
+# 로컬 DB / 캐시
+chroma_db/
+# 기타
+*.sqlite3
