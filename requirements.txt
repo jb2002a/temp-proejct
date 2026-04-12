@@ -1,5 +1,5 @@
 
-pypdf
+pymupdf
 chromadb
 langgraph
 langchain
@@ -8,3 +8,5 @@ langchain-huggingface
 ragas
 langchain-chroma
 rapidfuzz
+langchain-groq
+sentence-transformers
