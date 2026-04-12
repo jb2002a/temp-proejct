@@ -15,3 +15,7 @@ if __name__ == "__main__":
     # python -m src.rag.post_processing.response
     response = generate_response("노인 당뇨병에서 혈당조절이 안되는 환자인 경우 치료법")
     print(response)
+
+
+
+
