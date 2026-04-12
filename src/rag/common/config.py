@@ -5,6 +5,7 @@ PROJECT_ROOT = pathlib.Path(__file__).resolve().parent.parent.parent.parent
 
 BASIC_MODEL = "gpt-4o-mini"
 ADVANCED_MODEL = "gpt-4o"
+GROQ_MODEL = "llama-3.3-70b-versatile"
 
 EMBEDING_MODEL = "BAAI/bge-m3"
 CHROMA_DB_PATH = "./chroma_db"
