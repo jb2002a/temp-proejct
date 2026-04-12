@@ -4,7 +4,7 @@ from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from typing import List
 from src.rag.common.clients import get_vector_store_from_chroma
-from src.rag.common.config import PDF_FILE_PATH
+from src.rag.common.config import PDF_FILE_PATH, CHROMA_COLLECTION_NAME 
 
 # 전처리 과정
 # 문서 로드 -> 청킹 -> 임베딩&벡터스토어 저장
@@ -23,24 +23,27 @@ def split_document(documents: List[Document]) -> List[Document]:
     """
     Split the document into smaller chunks
     """
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100, length_function=len)
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50, length_function=len)
     all_splits = text_splitter.split_documents(documents)
     print(f"Split Done, Total chunks: {len(all_splits)}")
     return all_splits
 
 def save_chunks_to_chroma(all_splits: List[Document]) -> None:
     """
-    Save the chunks to the ChromaDB
+    Reset the ChromaDB and Save the chunks to the ChromaDB 
     """
     vector_store = get_vector_store_from_chroma()
+    vector_store.reset_collection() 
+    print("Reset Done")
     print("Save started")
-    document_ids = vector_store.add_documents(documents=all_splits)
-    print("Save Done")
+    vector_store.add_documents(documents=all_splits)
+    print(f"Saved Done, Total saved nodes: {vector_store._collection.count()}")
 
 if __name__ == "__main__":
     # python -m src.rag.pre_processing.document_pre_proccessing
     documents = load_documents()   
     all_splits = split_document(documents)
     save_chunks_to_chroma(all_splits)
+    
 
 
