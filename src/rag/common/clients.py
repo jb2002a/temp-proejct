@@ -1,4 +1,4 @@
-from src.rag.common.config import BASIC_MODEL, ADVANCED_MODEL, EMBEDING_MODEL, CHROMA_DB_PATH, CHROMA_COLLECTION_NAME, GROQ_MODEL
+from src.rag.common.config import BASIC_MODEL, ADVANCED_MODEL, EMBEDING_MODEL, CHROMA_DB_PATH, CHROMA_COLLECTION_NAME, GROQ_MODEL, BASIC_GEMINI_MODEL
 from langchain.chat_models import init_chat_model
 from langchain_core.language_models import BaseChatModel
 from langchain_huggingface import HuggingFaceEmbeddings
@@ -17,6 +17,9 @@ def get_advanced_model() -> BaseChatModel:
 
 def get_groq_model() -> BaseChatModel:
     return ChatGroq(model=GROQ_MODEL)
+
+def get_gemini_model() -> BaseChatModel:
+    return init_chat_model(BASIC_GEMINI_MODEL)
 
 def get_embed_model() -> HuggingFaceEmbeddings:
     return HuggingFaceEmbeddings(model_name=EMBEDING_MODEL)
