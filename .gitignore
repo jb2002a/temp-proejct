@@ -13,3 +13,4 @@ venv/
 chroma_db/
 # 기타
 *.sqlite3
+chroma_db/chroma.sqlite3
