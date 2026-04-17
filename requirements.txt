@@ -11,3 +11,4 @@ rapidfuzz
 langchain-groq
 sentence-transformers
 langchain-upstage
+sentence-transformers
