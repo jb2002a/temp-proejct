@@ -1,34 +1,30 @@
 
 from ragas.testset import TestsetGenerator
 from pandas import DataFrame
-from src.rag.common.clients import get_gemini_model, get_embed_model
-from src.rag.pre_processing.document_pre_proccessing import load_documents, split_document
+from src.rag.common.clients import get_model, get_embed_model
+from src.rag.pre_processing.json_to_vector_store import load_jsonl_file
 from pathlib import Path
-import traceback
 from datetime import datetime
-from ragas.testset.synthesizers import SingleHopSpecificQuerySynthesizer
-from ragas.testset.synthesizers import MultiHopSpecificQuerySynthesizer
 import asyncio
+from src.rag.post_processing.response import EXCLUDED_SUBJECTS
+from langchain_core.documents import Document
 
 async def generate_test_dataset_and_store() -> DataFrame:
-    llm = get_gemini_model()
+    llm = get_model()
     embedding_model = get_embed_model()
-    documents = load_documents()
-
-    query_distribution = [
-      (SingleHopSpecificQuerySynthesizer(llm=llm), 0.7),
-      (MultiHopSpecificQuerySynthesizer(llm=llm), 0.3),
-    ]
-    
-    chunks = split_document(documents)
+    documents = load_jsonl_file()
+    documents = sort_out_excluded_subjects(documents)
 
     generator = TestsetGenerator.from_langchain(llm=llm, embedding_model=embedding_model)
     try:
-        testset = generator.generate_with_chunks(chunks=chunks, testset_size=30, query_distribution=query_distribution)
+        testset = generator.generate_with_langchain_docs(documents=documents, testset_size=30)
     except Exception as e:
         print(f"Testset generation failed: {type(e).__name__}: {e}")
         raise
     return testset.to_pandas()
+
+def sort_out_excluded_subjects(retrieved_docs: list[Document]) -> list[Document]:
+    return [doc for doc in retrieved_docs if doc.metadata["current_subject"] not in EXCLUDED_SUBJECTS]
 
 if __name__ == "__main__":
     # python -m src.rag.dataset.dataset_generate
