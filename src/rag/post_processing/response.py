@@ -10,8 +10,6 @@ EXCLUDED_SUBJECTS = [
     "# 권고도출 자료원",
 ]
 
-
-
 @traceable
 def generate_response_and_context(query: str) -> dict[str, list[Document]]:
     """Generate a response and context."""
@@ -51,15 +49,17 @@ def build_messages(query: str, retrieved_docs: list[Document]):
 
     return [system, human]
 
-if __name__ == "__main__":
-    # python -m src.rag.post_processing.response
-
-    query = "혈당조절시 조심해야할점은 뭐노?"
-
+@traceable
+def pipeline_response(query: str) -> dict[str, list[Document]]:
     result = generate_response_and_context(query=query)
     response, retrieved_docs = result["response"], result["retrieved_docs"]
+    return {"response": response, "retrieved_docs": retrieved_docs}
 
-    print(f"response: {response}")
+if __name__ == "__main__":
+    # python -m src.rag.post_processing.response
+    query = "혈당조절시 조심해야할점은 뭐야?"
+    result = pipeline_response(query=query)
+    print(f"response: {result['response']}")
     print("-"*100)
-    print(f"retrieved_docs: {retrieved_docs}")
+    print(f"retrieved_docs: {result['retrieved_docs']}")
     

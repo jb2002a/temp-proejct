@@ -48,7 +48,6 @@ def save_chunks_to_chroma(documents: List[Document]) -> None:
 
 if __name__ == "__main__":
     # python -m src.rag.pre_processing.json_to_vector_store
-    save_chunks_to_chroma()
     documents = load_jsonl_file()
     save_chunks_to_chroma(documents)
 

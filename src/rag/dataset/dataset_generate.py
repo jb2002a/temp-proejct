@@ -8,10 +8,14 @@ from datetime import datetime
 import asyncio
 from src.rag.post_processing.response import EXCLUDED_SUBJECTS
 from langchain_core.documents import Document
+import os
 
 async def generate_test_dataset_and_store() -> DataFrame:
     llm = get_model()
     embedding_model = get_embed_model()
+
+    os.environ["LANGSMITH_TRACING"] = "false"
+
     documents = load_jsonl_file()
     documents = sort_out_excluded_subjects(documents)
 
