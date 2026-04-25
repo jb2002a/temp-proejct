@@ -10,5 +10,5 @@ __pycache__/
 .venv/
 venv/
 # 로컬 DB / 캐시
-chroma_db/
+
 
