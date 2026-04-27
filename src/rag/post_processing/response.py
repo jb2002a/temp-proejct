@@ -8,6 +8,7 @@ EXCLUDED_SUBJECTS = [
     "# 참고문헌",
     "# ↘ 권고도출 자료원",
     "# 권고도출 자료원",
+    "# ↘ 권고도출자료원"
 ]
 
 @traceable
@@ -15,7 +16,7 @@ def generate_response_and_context(query: str) -> dict[str, list[Document]]:
     """Generate a response and context."""
     model = get_model()
     vector_store = get_vector_store_from_chroma()
-    retriever = vector_store.as_retriever()
+    retriever = vector_store.as_retriever(search_kwargs={"filter": {"current_subject": {"$nin": EXCLUDED_SUBJECTS}}})
 
     retrieved_docs = retriever.invoke(query)
     messages = build_messages(query, retrieved_docs)
@@ -57,7 +58,7 @@ def pipeline_response(query: str) -> dict[str, list[Document]]:
 
 if __name__ == "__main__":
     # python -m src.rag.post_processing.response
-    query = "혈당조절시 조심해야할점은 뭐야?"
+    query = "What are the effects and considerations of Liraglutide as a GLP-1 receptor agonist in the treatment of obesity and diabetes?"
     result = pipeline_response(query=query)
     print(f"response: {result['response']}")
     print("-"*100)

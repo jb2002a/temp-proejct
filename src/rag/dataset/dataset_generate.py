@@ -4,7 +4,6 @@ from pandas import DataFrame
 from src.rag.common.clients import get_model, get_embed_model
 from src.rag.pre_processing.json_to_vector_store import load_jsonl_file
 from pathlib import Path
-from datetime import datetime
 import asyncio
 from src.rag.post_processing.response import EXCLUDED_SUBJECTS
 from langchain_core.documents import Document
@@ -34,10 +33,9 @@ if __name__ == "__main__":
     # python -m src.rag.dataset.dataset_generate
     df = asyncio.run(generate_test_dataset_and_store())
 
-    testset_name = f"testset_{datetime.now().strftime('%Y%m%d%H%M%S')}.csv"
-    output_path = Path("src/test_set/") / testset_name
+    output_path = Path("src/test_set/testset.csv")
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     df.to_csv(output_path, index=False, encoding="utf-8-sig")
-    print(f"Test dataset generated and stored as {testset_name}")
+    print(f"Test dataset generated and stored as {output_path.name}")
 

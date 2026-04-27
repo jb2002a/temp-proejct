@@ -5,6 +5,7 @@ import os
 import pathlib
 from collections.abc import Callable
 
+from langsmith import traceable
 from dotenv import load_dotenv
 from openai import AsyncOpenAI
 from pydantic import BaseModel
@@ -23,6 +24,7 @@ from src.rag.common.config import BASIC_MODEL, EMBEDING_MODEL, TESTSET_FILE_PATH
 from src.rag.post_processing.response import generate_response_and_context
 
 PROJECT_ROOT = pathlib.Path(__file__).resolve().parent.parent.parent
+
 
 
 class ExperimentResult(BaseModel):
@@ -44,6 +46,7 @@ class ExperimentResult(BaseModel):
     context_precision: float
     # 필요한 정보를 빠짐없이 가져왔는가?
     context_recall: float
+
 
 @experiment(ExperimentResult)
 async def run_evaluation(row, llm, embedding_model):
@@ -89,7 +92,7 @@ async def run_evaluation(row, llm, embedding_model):
 
     )
 
-
+@traceable
 def create_query_engine() -> Callable[[str], tuple[str, list[str]]]:
     def query(user_input: str) -> tuple[str, list[str]]:
         result = generate_response_and_context(query=user_input)
@@ -99,7 +102,7 @@ def create_query_engine() -> Callable[[str], tuple[str, list[str]]]:
 
     return query
 
-
+@traceable
 def _parse_reference_contexts(value: str | None) -> list[str] | None:
     if value is None or value == "":
         return None
@@ -111,7 +114,7 @@ def _parse_reference_contexts(value: str | None) -> list[str] | None:
         return [str(item) for item in parsed]
     return [str(parsed)]
 
-
+@traceable
 def build_eval_dataset_from_csv_and_query_engine() -> EvaluationDataset:
     query_engine = create_query_engine()
     rows: list[dict] = []
@@ -136,9 +139,9 @@ def build_eval_dataset_from_csv_and_query_engine() -> EvaluationDataset:
 
     return EvaluationDataset.from_list(rows)
 
-
-async def main():
-    load_dotenv()
+@traceable
+async def pipeline_evaluate():
+    load_dotenv(override=True)
     client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
     llm = llm_factory(BASIC_MODEL, client=client, max_tokens=8192, temperature=0.0)
     embedding_model = HuggingFaceEmbeddings(model=EMBEDING_MODEL)
@@ -152,7 +155,6 @@ async def main():
         embedding_model=embedding_model,
     )
     
-
 if __name__ == "__main__":
     # python -m src.evaluate.evaluate
-    asyncio.run(main())
+    asyncio.run(pipeline_evaluate())
